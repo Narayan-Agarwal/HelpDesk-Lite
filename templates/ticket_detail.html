@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block title %}Ticket #{{ ticket.ticket_id }} · HelpDesk Lite{% endblock %}
+
+{% block content %}
+  <a class="back-link" href="{{ url_for('dashboard') }}">&larr; All tickets</a>
+
+  <div class="page-header">
+    <div>
+      <h1>{{ ticket.title }}</h1>
+      <p class="muted mono">#{{ ticket.ticket_id }} &middot; opened {{ ticket.created_at }}</p>
+    </div>
+    <span class="badge badge--status-{{ ticket.status|lower|replace(' ', '-') }} badge--lg">{{ ticket.status }}</span>
+  </div>
+
+  <div class="detail-grid">
+    <div class="detail-card">
+      <h3>Description</h3>
+      <p>{{ ticket.description or "No description provided." }}</p>
+
+      <div class="detail-meta">
+        <div>
+          <span class="muted">Priority</span>
+          <span class="badge badge--priority-{{ ticket.priority|lower }}">{{ ticket.priority }}</span>
+        </div>
+        <div>
+          <span class="muted">Assigned to</span>
+          <span>{{ assigned_agent.name if assigned_agent else "Unassigned" }}</span>
+        </div>
+      </div>
+    </div>
+
+    {% if current_role == 'agent' %}
+    <div class="detail-card actions-card">
+      <h3>Agent actions</h3>
+
+      <form method="POST" action="{{ url_for('assign_ticket', ticket_id=ticket.ticket_id) }}">
+        <label for="agent_id">Assign to</label>
+        <div class="inline-form">
+          <select id="agent_id" name="agent_id" required>
+            {% for agent in agents %}
+              <option value="{{ agent.user_id }}" {% if assigned_agent and assigned_agent.user_id == agent.user_id %}selected{% endif %}>{{ agent.name }}</option>
+            {% endfor %}
+          </select>
+          <button class="btn btn--secondary" type="submit">Assign</button>
+        </div>
+      </form>
+
+      <div class="inline-form" style="margin-top: 16px;">
+        <form method="POST" action="{{ url_for('resolve_ticket', ticket_id=ticket.ticket_id) }}">
+          <button class="btn btn--primary" type="submit" {% if ticket.status == 'Open' %}disabled title="Assign the ticket first"{% endif %}>Resolve</button>
+        </form>
+        <form method="POST" action="{{ url_for('escalate_ticket', ticket_id=ticket.ticket_id) }}">
+          <button class="btn btn--danger" type="submit">Escalate</button>
+        </form>
+      </div>
+    </div>
+    {% endif %}
+  </div>
+{% endblock %}

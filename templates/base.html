@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}HelpDesk Lite{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar__brand">
+      <span class="topbar__mark">HD</span>
+      <div>
+        <div class="topbar__title">HelpDesk Lite</div>
+        <div class="topbar__subtitle">Internal ticket console</div>
+      </div>
+    </div>
+
+    <form class="role-switch" method="POST" action="{{ url_for('switch_role') }}">
+      <label for="role-select" class="role-switch__label">Viewing as</label>
+      <select id="role-select" name="role" onchange="this.form.submit()">
+        <option value="employee" {% if current_role == 'employee' %}selected{% endif %}>Employee</option>
+        <option value="agent" {% if current_role == 'agent' %}selected{% endif %}>Agent</option>
+      </select>
+    </form>
+  </header>
+
+  <main class="page">
+    {% block content %}{% endblock %}
+  </main>
+</body>
+</html>

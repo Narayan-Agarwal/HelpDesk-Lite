@@ -1,0 +1,8 @@
+__pycache__/
+*.pyc
+helpdesk.db
+.env
+venv/
+*.jpg
+cookies.txt
+flask.log
