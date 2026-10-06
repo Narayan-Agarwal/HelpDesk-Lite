@@ -6,3 +6,4 @@ venv/
 *.jpg
 cookies.txt
 flask.log
+.venv/
